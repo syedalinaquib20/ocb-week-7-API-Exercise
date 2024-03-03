@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get API (Additional Method)</title>
+</head>
+<body>
+    <input type="text" id="searchInput" placeholder="Search">
+    <button id="searchButton">Search</button>
+    <table id="searchResults">
+        <thead>
+            <tr>
+                <td>Photo</td>
+                <td>Photographer</td>
+                <td>Size</td>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchResults = document.getElementById('searchResults').getElementsByTagName('tbody')[0];
+
+        searchButton.addEventListener('click', () => {
+            const searchQuery = searchInput.value 
+
+            fetch(`https://api.pexels.com/v1/search?query=${searchQuery}`, {
+                headers: {
+                    'Authorization': 'fEsBN0jr23I509oBuaXQnNAty3ieqPlqvoQJlpI75fbY2xv81sETanqt'
+                }
+            })
+            .then(response => response.json())
+            .then(body => {
+                searchResults.innerHTML = '';
+
+                body.photos.forEach(photo => {
+                    const row = document.createElement('tr');
+                    const photoCell = document.createElement('td');
+                    const photographerCell = document.createElement('td');
+                    const sizeCell = document.createElement('td');
+
+                    const img = document.createElement('img');
+                    img.src = photo.src.medium;
+                    photoCell.appendChild(img);
+
+                    photographerCell.textContent = photo.photographer;
+                    sizeCell.textContent = `${photo.width} x ${photo.height}`;
+
+                    row.appendChild(photoCell);
+                    row.appendChild(photographerCell);
+                    row.appendChild(sizeCell);
+
+                    searchResults.appendChild(row);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
